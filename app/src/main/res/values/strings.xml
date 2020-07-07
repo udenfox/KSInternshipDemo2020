@@ -5,4 +5,7 @@
     <string name="open_activity_implicit_btn_text">Open Activity Implicit</string>
     <string name="secoond_activity_title">SecondActivity</string>
     <string name="third_activity_title">ThirdActivity</string>
+    <string name="open_google_btn_text">Open Google</string>
+    <string name="open_settings_btn_text">Open Settings</string>
+    <string name="send_email_btn_text">Send Email</string>
 </resources>
