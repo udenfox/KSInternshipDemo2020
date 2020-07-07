@@ -7,14 +7,15 @@
     tools:context=".activity.ThirdActivity">
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/intent_data_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/third_activity_title"
         android:textAlignment="center"
         android:textSize="@dimen/title_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

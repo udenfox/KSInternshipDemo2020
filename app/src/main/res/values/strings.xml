@@ -8,4 +8,9 @@
     <string name="open_google_btn_text">Open Google</string>
     <string name="open_settings_btn_text">Open Settings</string>
     <string name="send_email_btn_text">Send Email</string>
+    <string name="request_name_btn_text">Request name</string>
+    <string name="name_edittext_hint_text">Enter your name...</string>
+    <string name="send_btn_text">Send</string>
+    <string name="input_activity_text">Input Activity</string>
+    <string name="send_data_button_text">Send Data to other activity</string>
 </resources>

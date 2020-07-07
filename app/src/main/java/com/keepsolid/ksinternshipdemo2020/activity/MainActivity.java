@@ -1,23 +1,22 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.keepsolid.ksinternshipdemo2020.R;
+import com.keepsolid.ksinternshipdemo2020.model.Vehicle;
+import com.keepsolid.ksinternshipdemo2020.utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppCompatButton explicitBtn;
-    private AppCompatButton implicitBtn;
-    private AppCompatButton emailBtn;
-    private AppCompatButton browserBtn;
-    private AppCompatButton settingsBtn;
+    private AppCompatButton requestNameBtn;
+    private AppCompatButton sendDataBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,79 +29,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        explicitBtn.setOnClickListener(new View.OnClickListener() {
+        requestNameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSecondActivityExplicit();
+                openSecondActivityForResult();
             }
         });
 
-        implicitBtn.setOnClickListener(new View.OnClickListener() {
+        sendDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openThirdActivityImplicit();
+                openThirdActivityWithData();
             }
         });
 
-        emailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendEmail("somemail@mail.com", "Test message!", "Hello world!");
-            }
-        });
-
-        browserBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openUrl("https://www.google.com");
-            }
-        });
-
-        settingsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openSettings();
-            }
-        });
     }
 
     private void initViews() {
-        explicitBtn = findViewById(R.id.btn_open_explicit);
-        implicitBtn = findViewById(R.id.btn_open_implicit);
-        emailBtn = findViewById(R.id.btn_send_email);
-        browserBtn = findViewById(R.id.btn_open_google);
-        settingsBtn = findViewById(R.id.btn_open_settings);
+        requestNameBtn = findViewById(R.id.btn_request_name);
+        sendDataBtn = findViewById(R.id.btn_send_data);
     }
 
-    public void openSecondActivityExplicit() {
+    public void openSecondActivityForResult() {
         Intent explicitIntent = new Intent(MainActivity.this, SecondActivity.class);
-        startActivity(explicitIntent);
+        startActivityForResult(explicitIntent, Constants.NAME_REQUEST_CODE);
     }
 
-    public void openThirdActivityImplicit() {
-        Intent explicitIntent = new Intent("com.keepsolid.ksinternshipdemo2020.ACTION_THIRD_ACTIVITY");
-        startActivity(explicitIntent);
+    public void openThirdActivityWithData() {
+        Intent dataIntent = new Intent(MainActivity.this, ThirdActivity.class);
+        dataIntent.putExtra(Constants.EXTRA_STRING, "Some string");
+        dataIntent.putExtra(Constants.EXTRA_INT, "42");
+        dataIntent.putExtra(Constants.EXTRA_VEHICLE, new Vehicle("Veyron", "Bugatti", 410, true));
+        startActivity(dataIntent);
     }
 
-    public void openUrl(String url) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(browserIntent);
+    private void showNameToast(String name) {
+        Toast.makeText(MainActivity.this, name, Toast.LENGTH_LONG).show();
     }
 
-    public void sendEmail(String email, String subject, String message) {
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_EMAIL, email);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-
-        intent.setType("message/rfc822");
-        startActivity(intent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.NAME_REQUEST_CODE) {
+            if (data != null) {
+                if (data.getExtras() != null) {
+                    String name = data.getExtras().getString(Constants.EXTRA_NAME);
+                    showNameToast(name);
+                }
+            }
+        }
     }
-
-    public void openSettings() {
-        Intent settingsIntent = new Intent(Settings.ACTION_SETTINGS);
-        startActivity(settingsIntent);
-    }
-
 }
