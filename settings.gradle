@@ -1,0 +1,2 @@
+rootProject.name='KSInternshipDemo2020'
+include ':app'
