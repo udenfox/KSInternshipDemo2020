@@ -1,8 +1,10 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.keepsolid.ksinternshipdemo2020.R;
 
 public class ThirdActivity extends AppCompatActivity {
 

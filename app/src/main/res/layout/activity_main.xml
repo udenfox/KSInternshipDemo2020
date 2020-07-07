@@ -10,21 +10,23 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="MainActivity"
+        android:text="@string/main_activity_title"
         android:textAlignment="center"
-        android:textSize="20dp" />
+        android:textSize="@dimen/title_text_size" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Open Activity Explicit" />
+        android:layout_marginTop="@dimen/default_margin"
+        android:onClick="openSecondActivityExplicit"
+        android:text="@string/open_activity_explicit_btn_text" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Open Activity Implicit" />
+        android:onClick="openThirdActivityImplicit"
+        android:layout_marginTop="@dimen/default_middle_margin"
+        android:text="@string/open_activity_implicit_btn_text" />
 
 
 </LinearLayout>

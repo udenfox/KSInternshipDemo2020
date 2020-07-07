@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">KSInternshipDemo2020</string>
+    <string name="main_activity_title">MainActivity</string>
+    <string name="open_activity_explicit_btn_text">Open Activity Explicit</string>
+    <string name="open_activity_implicit_btn_text">Open Activity Implicit</string>
+    <string name="secoond_activity_title">SecondActivity</string>
+    <string name="third_activity_title">ThirdActivity</string>
 </resources>

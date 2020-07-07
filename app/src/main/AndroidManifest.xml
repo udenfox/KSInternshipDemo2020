@@ -12,8 +12,10 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".activity.ThirdActivity">
-            <action android:name="com.keepsolid.ksinternshipdemo2020.ACTION_THIRD_ACTIVITY" />
-            <category android:name="android.intent.category.DEFAULT" />
+            <intent-filter>
+                <action android:name="com.keepsolid.ksinternshipdemo2020.ACTION_THIRD_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".activity.SecondActivity" />
