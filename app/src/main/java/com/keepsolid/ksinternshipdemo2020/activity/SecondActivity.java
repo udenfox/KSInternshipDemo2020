@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import com.keepsolid.ksinternshipdemo2020.utils.Constants;
 
 public class SecondActivity extends AppCompatActivity {
 
+    private final static String LOG_TAG = SecondActivity.class.getSimpleName();
+
     private AppCompatEditText editText;
     private AppCompatButton sendBtn;
     private AppCompatTextView titleText;
@@ -25,6 +28,9 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(LOG_TAG, "onCreate()");
+
         setContentView(R.layout.activity_second);
 
         editText = findViewById(R.id.et_name_input);
@@ -32,8 +38,42 @@ public class SecondActivity extends AppCompatActivity {
         titleText = findViewById(R.id.tv_input_activity);
 
         setListeners();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(LOG_TAG, "onStart()");
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(LOG_TAG, "onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG_TAG, "onStop()");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(LOG_TAG, "onRestart()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy()");
     }
 
     private void setListeners() {
@@ -79,6 +119,5 @@ public class SecondActivity extends AppCompatActivity {
         finish();
 
     }
-
 
 }
