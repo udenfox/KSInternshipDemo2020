@@ -15,16 +15,16 @@
         android:textSize="@dimen/title_text_size" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_open_explicit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_margin"
-        android:onClick="openSecondActivityExplicit"
         android:text="@string/open_activity_explicit_btn_text" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_open_implicit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="openThirdActivityImplicit"
         android:layout_marginTop="@dimen/default_middle_margin"
         android:text="@string/open_activity_implicit_btn_text" />
 
