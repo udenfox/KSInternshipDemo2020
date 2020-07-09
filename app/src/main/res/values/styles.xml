@@ -9,6 +9,11 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
     </style>
 
+    <style name="AppButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+
     <style name="SecondAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary_second</item>
         <item name="colorPrimaryDark">@color/primary_dark_second</item>

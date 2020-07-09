@@ -28,8 +28,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_send"
-        android:backgroundTint="?attr/colorPrimary"
-        android:textColor="@android:color/white"
+        style="@style/AppButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/send_btn_text" />
