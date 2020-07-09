@@ -7,14 +7,9 @@
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <include
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:minHeight="@dimen/toolbar_height"
-        style="@style/AppToolbar"
-        app:elevation="0dp" />
+        layout="@layout/toolbar_layout" />
 
     <LinearLayout
         android:id="@+id/content"

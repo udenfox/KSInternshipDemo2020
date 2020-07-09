@@ -6,15 +6,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
 import com.keepsolid.ksinternshipdemo2020.R;
+import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.Vehicle;
 import com.keepsolid.ksinternshipdemo2020.utils.Constants;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private AppCompatButton requestNameBtn;
     private AppCompatButton sendDataBtn;
@@ -51,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         requestNameBtn = findViewById(R.id.btn_request_name);
         sendDataBtn = findViewById(R.id.btn_send_data);
-    }
-
-    public void initToolbar(String title) {
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(title);
     }
 
     public void openSecondActivityForResult() {
