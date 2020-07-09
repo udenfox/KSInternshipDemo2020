@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.model.Vehicle;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppCompatButton requestNameBtn;
     private AppCompatButton sendDataBtn;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setListeners();
+        initToolbar(getString(R.string.app_name));
 
     }
 
@@ -48,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         requestNameBtn = findViewById(R.id.btn_request_name);
         sendDataBtn = findViewById(R.id.btn_send_data);
+    }
+
+    public void initToolbar(String title) {
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
     }
 
     public void openSecondActivityForResult() {

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.utils.Constants;
@@ -24,6 +25,7 @@ public class SecondActivity extends AppCompatActivity {
     private AppCompatEditText editText;
     private AppCompatButton sendBtn;
     private AppCompatTextView titleText;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,21 @@ public class SecondActivity extends AppCompatActivity {
         sendBtn = findViewById(R.id.btn_send);
         titleText = findViewById(R.id.tv_input_activity);
 
+        initToolbar(getString(R.string.secoond_activity_title));
+
         setListeners();
+    }
+
+    public void initToolbar(String title) {
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(title);
+        toolbar.setNavigationIcon(R.drawable.ic_back_btn);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SecondActivity.this.onBackPressed();
+            }
+        });
     }
 
     @Override
