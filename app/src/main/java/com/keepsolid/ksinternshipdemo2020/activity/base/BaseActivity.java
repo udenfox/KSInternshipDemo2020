@@ -28,4 +28,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         toolbar.setTitle(title);
     }
 
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+
 }

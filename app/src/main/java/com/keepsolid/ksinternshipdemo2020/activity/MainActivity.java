@@ -11,24 +11,22 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.fragment.FirstFragment;
 import com.keepsolid.ksinternshipdemo2020.fragment.SecondFragment;
 import com.keepsolid.ksinternshipdemo2020.utils.Constants;
+import com.keepsolid.ksinternshipdemo2020.utils.adapter.ViewPagerAdapter;
 
 public class MainActivity extends BaseActivity {
 
-    private Toolbar toolbar;
-
-    private AppCompatButton btnAdd;
-    private AppCompatButton btnRemove;
-    private AppCompatButton btnReplace;
-    private SwitchCompat backstackSwitch;
-
     private FirstFragment fragmentOne;
     private SecondFragment fragmentTwo;
+
+    private ViewPager viewPager;
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,69 +38,44 @@ public class MainActivity extends BaseActivity {
         fragmentOne = FirstFragment.newInstance("Denis", "Shevtsov");
         fragmentTwo = new SecondFragment();
 
-        setListeners();
+        adapter.addFragment(fragmentOne, "Fragment One");
+        adapter.addFragment(fragmentTwo, "Fragment Two");
+
+        viewPager.setAdapter(adapter);
+
         initToolbar(getString(R.string.app_name));
+
+        getToolbar().setTitle(adapter.getPageTitle(0));
+
+        setListeners();
 
     }
 
     private void initViews() {
-        btnAdd = findViewById(R.id.btn_add);
-        btnRemove = findViewById(R.id.btn_remove);
-        btnReplace = findViewById(R.id.btn_replace);
-        backstackSwitch = findViewById(R.id.backstack_switch);
+        viewPager = findViewById(R.id.view_pager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
     }
 
     private void setListeners() {
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onClick(View v) {
-                addFragment(fragmentOne);
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                getToolbar().setTitle(adapter.getPageTitle(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
-        btnReplace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(fragmentTwo);
-            }
-        });
-
-        btnRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeFragment(fragmentOne);
-            }
-        });
-
-    }
-
-    private void addFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_container, fragment);
-        if (backstackSwitch.isChecked()) {
-            transaction.addToBackStack(null);
-        }
-        transaction.commit();
-    }
-
-    private void removeFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.remove(fragment);
-        if (backstackSwitch.isChecked()) {
-            transaction.addToBackStack(null);
-        }
-        transaction.commit();
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        if (backstackSwitch.isChecked()) {
-            transaction.addToBackStack(null);
-        }
-        transaction.commit();
     }
 
 }
