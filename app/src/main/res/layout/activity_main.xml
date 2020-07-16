@@ -11,37 +11,5 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar_layout" />
 
-    <LinearLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_activity_title"
-            android:textAlignment="center"
-            android:textSize="@dimen/title_text_size" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_send_data"
-            style="@style/AppButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:text="@string/send_data_button_text" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_request_name"
-            style="@style/AppButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:text="@string/request_name_btn_text" />
-    </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
