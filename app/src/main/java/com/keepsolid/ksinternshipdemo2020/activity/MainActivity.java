@@ -2,84 +2,82 @@ package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
+import androidx.annotation.DrawableRes;
 
-import com.google.android.material.tabs.TabLayout;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
-import com.keepsolid.ksinternshipdemo2020.fragment.FirstFragment;
-import com.keepsolid.ksinternshipdemo2020.fragment.SecondFragment;
+import com.keepsolid.ksinternshipdemo2020.fragment.FragmentChooser;
+import com.keepsolid.ksinternshipdemo2020.fragment.FragmentViewer;
 import com.keepsolid.ksinternshipdemo2020.utils.Constants;
-import com.keepsolid.ksinternshipdemo2020.utils.adapter.ViewPagerAdapter;
+import com.keepsolid.ksinternshipdemo2020.utils.listeners.PictureSelectListener;
 
 public class MainActivity extends BaseActivity {
 
-    private FirstFragment fragmentOne;
-    private SecondFragment fragmentTwo;
+    private FragmentChooser fragmentChooser;
+    private FragmentViewer fragmentViewer;
 
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private ViewPagerAdapter adapter;
+    private PictureSelectListener pictureSelectListener;
+
+    boolean inLandscapeMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initViews();
-
-        fragmentOne = FirstFragment.newInstance("Denis", "Shevtsov");
-        fragmentTwo = new SecondFragment();
-
-        adapter.addFragment(fragmentOne, "Fragment One");
-        adapter.addFragment(fragmentTwo, "Fragment Two");
-
-        viewPager.setAdapter(adapter);
-
         initToolbar(getString(R.string.app_name));
 
-        tabLayout = findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        inLandscapeMode = findViewById(R.id.fragment_two) != null;
 
-        getToolbar().setTitle(adapter.getPageTitle(0));
+        fragmentChooser = (FragmentChooser) getSupportFragmentManager().findFragmentById(R.id.fragment_one);
+        if (inLandscapeMode) {
+            fragmentViewer = (FragmentViewer) getSupportFragmentManager().findFragmentById(R.id.fragment_two);
+        }
 
-        setListeners();
+        pictureSelectListener = new PictureSelectListener() {
+            @Override
+            public void onCatSelected() {
+                displaySelected(R.drawable.cat);
+            }
+
+            @Override
+            public void onFoodSelected() {
+                displaySelected(R.drawable.food);
+            }
+
+            @Override
+            public void onSunsetSelected() {
+                displaySelected(R.drawable.sunset);
+            }
+
+            @Override
+            public void onSpaceSelected() {
+                displaySelected(R.drawable.space);
+            }
+        };
+
+        fragmentChooser.setPictureSelectListener(pictureSelectListener);
 
     }
 
+    private void displaySelected(@DrawableRes int selectedImageResId) {
+
+        if (inLandscapeMode) {
+            fragmentViewer.displayResource(selectedImageResId);
+        } else {
+            Intent viewIntent = new Intent(MainActivity.this, SecondActivity.class);
+            viewIntent.putExtra(Constants.KEY_RES_ID, selectedImageResId);
+            startActivity(viewIntent);
+        }
+    }
+
     private void initViews() {
-        viewPager = findViewById(R.id.view_pager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
     }
 
     private void setListeners() {
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                getToolbar().setTitle(adapter.getPageTitle(position));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
     }
 

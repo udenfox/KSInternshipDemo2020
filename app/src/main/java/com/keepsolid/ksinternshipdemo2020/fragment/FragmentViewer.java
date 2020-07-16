@@ -2,6 +2,7 @@ package com.keepsolid.ksinternshipdemo2020.fragment;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -12,12 +13,14 @@ import com.keepsolid.ksinternshipdemo2020.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SecondFragment#newInstance} factory method to
+ * Use the {@link FragmentViewer#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecondFragment extends Fragment {
+public class FragmentViewer extends Fragment {
 
-    public SecondFragment() {
+    private AppCompatImageView imageView;
+
+    public FragmentViewer() {
         // Required empty public constructor
     }
 
@@ -29,7 +32,14 @@ public class SecondFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_second, container, false);
+        View v = inflater.inflate(R.layout.fragment_viewer, container, false);
+        imageView = v.findViewById(R.id.image_view);
+
+        return v;
     }
+
+    public void displayResource(int resId) {
+        imageView.setImageResource(resId);
+    }
+
 }
