@@ -13,4 +13,7 @@
     <string name="send_btn_text">Send</string>
     <string name="input_activity_text">Input Activity</string>
     <string name="send_data_button_text">Send Data to other activity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_one_title">Fragment One</string>
 </resources>
