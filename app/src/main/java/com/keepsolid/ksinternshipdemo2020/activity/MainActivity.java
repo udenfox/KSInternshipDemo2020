@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity {
 
         initViews();
 
-        fragmentOne = new FirstFragment();
+        fragmentOne = FirstFragment.newInstance("Denis", "Shevtsov");
         fragmentTwo = new SecondFragment();
 
         setListeners();
