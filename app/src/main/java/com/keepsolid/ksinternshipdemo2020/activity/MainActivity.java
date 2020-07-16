@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.fragment.FirstFragment;
@@ -26,6 +27,7 @@ public class MainActivity extends BaseActivity {
     private SecondFragment fragmentTwo;
 
     private ViewPager viewPager;
+    private TabLayout tabLayout;
     private ViewPagerAdapter adapter;
 
     @Override
@@ -44,6 +46,9 @@ public class MainActivity extends BaseActivity {
         viewPager.setAdapter(adapter);
 
         initToolbar(getString(R.string.app_name));
+
+        tabLayout = findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         getToolbar().setTitle(adapter.getPageTitle(0));
 
