@@ -1,24 +1,22 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
-import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskAdapter;
+import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskRecyclerAdapter;
 
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
-    private ListView tasksListView;
-    private TaskAdapter adapter;
-    private ArrayList<TaskItem> items;
+    RecyclerView recyclerView;
+    ArrayList<TaskItem> items;
+    TaskRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +25,7 @@ public class MainActivity extends BaseActivity {
 
         initToolbar(getString(R.string.app_name));
 
-        tasksListView = (ListView) findViewById(R.id.list_view);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_recycler);
 
         items = new ArrayList<>();
 
@@ -47,20 +45,11 @@ public class MainActivity extends BaseActivity {
 
 
 
-        adapter = new TaskAdapter(items, this);
+        adapter = new TaskRecyclerAdapter(items, this);
 
-        tasksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Full task name")
-                        .setMessage(adapter.getItems().get(position).getTaskName())
-                        .setCancelable(true)
-                        .create().show();
-            }
-        });
-
-        tasksListView.setAdapter(adapter);
+        // Can be changed to any layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
 
     }
 
