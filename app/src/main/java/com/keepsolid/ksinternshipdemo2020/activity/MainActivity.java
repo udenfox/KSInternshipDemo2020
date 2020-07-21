@@ -1,7 +1,9 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +11,7 @@ import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskRecyclerAdapter;
+import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskRecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -45,6 +48,17 @@ public class MainActivity extends BaseActivity {
 
 
         adapter = new TaskRecyclerAdapter(items, this);
+
+        adapter.setListener(new OnTaskRecyclerItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Full task name")
+                        .setMessage(adapter.getItems().get(position).getTaskName())
+                        .setCancelable(true)
+                        .create().show();
+            }
+        });
 
         // Can be changed to any layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
