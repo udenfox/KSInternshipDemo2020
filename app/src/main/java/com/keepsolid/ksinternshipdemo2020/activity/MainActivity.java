@@ -44,7 +44,6 @@ public class MainActivity extends BaseActivity {
         items.add(new TaskItem(true, "Впихнуть невпихуемое", TaskItem.Type.PLACE, "13:00", "15/05/2020"));
 
 
-
         adapter = new TaskRecyclerAdapter(items, this);
 
         // Can be changed to any layout manager
