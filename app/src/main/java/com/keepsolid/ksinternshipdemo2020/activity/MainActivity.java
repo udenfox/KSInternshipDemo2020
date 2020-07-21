@@ -1,25 +1,24 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
-import androidx.annotation.DrawableRes;
+import androidx.appcompat.app.AlertDialog;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
-import com.keepsolid.ksinternshipdemo2020.fragment.FragmentChooser;
-import com.keepsolid.ksinternshipdemo2020.fragment.FragmentViewer;
-import com.keepsolid.ksinternshipdemo2020.utils.Constants;
-import com.keepsolid.ksinternshipdemo2020.utils.listeners.PictureSelectListener;
+import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
+import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskAdapter;
+
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
-    private FragmentChooser fragmentChooser;
-    private FragmentViewer fragmentViewer;
-
-    private PictureSelectListener pictureSelectListener;
-
-    boolean inLandscapeMode;
+    private ListView tasksListView;
+    private TaskAdapter adapter;
+    private ArrayList<TaskItem> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,56 +27,40 @@ public class MainActivity extends BaseActivity {
 
         initToolbar(getString(R.string.app_name));
 
-        inLandscapeMode = findViewById(R.id.fragment_two) != null;
+        tasksListView = (ListView) findViewById(R.id.list_view);
 
-        fragmentChooser = (FragmentChooser) getSupportFragmentManager().findFragmentById(R.id.fragment_one);
-        if (inLandscapeMode) {
-            fragmentViewer = (FragmentViewer) getSupportFragmentManager().findFragmentById(R.id.fragment_two);
-        }
+        items = new ArrayList<>();
 
-        pictureSelectListener = new PictureSelectListener() {
+        items.add(new TaskItem(true, "Создать этот список", TaskItem.Type.ALARM, "10:00", "07/05/2020"));
+        items.add(new TaskItem(true, "Отметить первый пункт как готовый", TaskItem.Type.ALARM, "11:25", "07/05/2020"));
+        items.add(new TaskItem(true, "Осознать что 2 пункта уже готовы", TaskItem.Type.NOTE, "11:30", "07/05/2020"));
+        items.add(new TaskItem(false, "Отдохнуть", TaskItem.Type.PLACE, "11:35", "07/05/2020"));
+        items.add(new TaskItem(false, "Заказать воду", TaskItem.Type.ALARM, "16:00", "09/05/2020"));
+        items.add(new TaskItem(true, "Заплатить за интернет", TaskItem.Type.NOTE, "10:00", "11/05/2020"));
+        items.add(new TaskItem(true, "Придумать следующий элемент списка", TaskItem.Type.NOTE, "12:00", "11/05/2020"));
+        items.add(new TaskItem(false, "Сходить на работу", TaskItem.Type.PLACE, "09:00", "12/05/2020"));
+        items.add(new TaskItem(false, "Провести занятие интернатуры", TaskItem.Type.PLACE, "13:00", "12/05/2020"));
+        items.add(new TaskItem(false, "Развидеть увиденное", TaskItem.Type.ALARM, "00:00", "13/05/2020"));
+        items.add(new TaskItem(false, "Перевернуть пингвина", TaskItem.Type.NOTE, "22:00", "13/05/2020"));
+        items.add(new TaskItem(true, "Залипнуть в инете", TaskItem.Type.NOTE, "12:00", "14/05/2020"));
+        items.add(new TaskItem(true, "Впихнуть невпихуемое", TaskItem.Type.PLACE, "13:00", "15/05/2020"));
+
+
+
+        adapter = new TaskAdapter(items, this);
+
+        tasksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onCatSelected() {
-                displaySelected(R.drawable.cat);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Full task name")
+                        .setMessage(adapter.getItems().get(position).getTaskName())
+                        .setCancelable(true)
+                        .create().show();
             }
+        });
 
-            @Override
-            public void onFoodSelected() {
-                displaySelected(R.drawable.food);
-            }
-
-            @Override
-            public void onSunsetSelected() {
-                displaySelected(R.drawable.sunset);
-            }
-
-            @Override
-            public void onSpaceSelected() {
-                displaySelected(R.drawable.space);
-            }
-        };
-
-        fragmentChooser.setPictureSelectListener(pictureSelectListener);
-
-    }
-
-    private void displaySelected(@DrawableRes int selectedImageResId) {
-
-        if (inLandscapeMode) {
-            fragmentViewer.displayResource(selectedImageResId);
-        } else {
-            Intent viewIntent = new Intent(MainActivity.this, SecondActivity.class);
-            viewIntent.putExtra(Constants.KEY_RES_ID, selectedImageResId);
-            startActivity(viewIntent);
-        }
-    }
-
-    private void initViews() {
-
-    }
-
-    private void setListeners() {
-
+        tasksListView.setAdapter(adapter);
 
     }
 
