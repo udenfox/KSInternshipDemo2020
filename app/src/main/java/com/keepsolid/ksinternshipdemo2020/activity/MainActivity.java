@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
@@ -20,6 +21,7 @@ public class MainActivity extends BaseActivity {
     RecyclerView recyclerView;
     ArrayList<TaskItem> items;
     TaskRecyclerAdapter adapter;
+    FloatingActionButton addBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class MainActivity extends BaseActivity {
         initToolbar(getString(R.string.app_name));
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_recycler);
+        addBtn = findViewById(R.id.fab_add);
 
         items = new ArrayList<>();
 
@@ -46,7 +49,6 @@ public class MainActivity extends BaseActivity {
         items.add(new TaskItem(true, "Залипнуть в инете", TaskItem.Type.NOTE, "12:00", "14/05/2020"));
         items.add(new TaskItem(true, "Впихнуть невпихуемое", TaskItem.Type.PLACE, "13:00", "15/05/2020"));
 
-
         adapter = new TaskRecyclerAdapter(items, this);
 
         adapter.setListener(new OnTaskRecyclerItemClickListener() {
@@ -63,6 +65,17 @@ public class MainActivity extends BaseActivity {
         // Can be changed to any layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (items != null && adapter != null) {
+                    items.add(new TaskItem(true, "NEW TASK", TaskItem.Type.PLACE, "13:00", "15/05/2017"));
+                    adapter.notifyDataSetChanged();
+                    //recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+                }
+            }
+        });
 
     }
 
