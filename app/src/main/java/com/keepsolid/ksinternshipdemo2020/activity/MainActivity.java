@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
@@ -20,8 +21,22 @@ public class MainActivity extends BaseActivity {
 
     RecyclerView recyclerView;
     ArrayList<TaskItem> items;
-    TaskRecyclerAdapter adapter;
+    ArrayList<TaskItem> secondaryItems;
+    TaskRecyclerAdapter mainTasksAdapter;
+    TaskRecyclerAdapter secondaryTasksAdapter;
     FloatingActionButton addBtn;
+    TabLayout tabLayout;
+
+    private OnTaskRecyclerItemClickListener onTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Full task name")
+                    .setMessage(mainTasksAdapter.getItems().get(position).getTaskName())
+                    .setCancelable(true)
+                    .create().show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +45,35 @@ public class MainActivity extends BaseActivity {
 
         initToolbar(getString(R.string.app_name));
 
-        recyclerView = (RecyclerView) findViewById(R.id.rv_recycler);
+        recyclerView = findViewById(R.id.rv_recycler);
         addBtn = findViewById(R.id.fab_add);
 
-        items = new ArrayList<>();
+        tabLayout = findViewById(R.id.main_tabs);
+        initTabs();
 
+
+        initMainTasksAdapter();
+        initSecondaryTasksAdapter();
+
+        // Can be changed to any layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mainTasksAdapter);
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (items != null && mainTasksAdapter != null) {
+                    items.add(new TaskItem(true, "NEW TASK", TaskItem.Type.PLACE, "13:00", "15/05/2017"));
+                    mainTasksAdapter.notifyDataSetChanged();
+                    //recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+                }
+            }
+        });
+
+    }
+
+    private void initMainTasksAdapter() {
+        items = new ArrayList<>();
         items.add(new TaskItem(true, "Создать этот список", TaskItem.Type.ALARM, "10:00", "07/05/2020"));
         items.add(new TaskItem(true, "Отметить первый пункт как готовый", TaskItem.Type.ALARM, "11:25", "07/05/2020"));
         items.add(new TaskItem(true, "Осознать что 2 пункта уже готовы", TaskItem.Type.NOTE, "11:30", "07/05/2020"));
@@ -49,31 +88,49 @@ public class MainActivity extends BaseActivity {
         items.add(new TaskItem(true, "Залипнуть в инете", TaskItem.Type.NOTE, "12:00", "14/05/2020"));
         items.add(new TaskItem(true, "Впихнуть невпихуемое", TaskItem.Type.PLACE, "13:00", "15/05/2020"));
 
-        adapter = new TaskRecyclerAdapter(items, this);
+        mainTasksAdapter = new TaskRecyclerAdapter(items, this);
 
-        adapter.setListener(new OnTaskRecyclerItemClickListener() {
+        mainTasksAdapter.setListener(onTaskRecyclerItemClickListener);
+    }
+
+    private void initSecondaryTasksAdapter() {
+        secondaryItems = new ArrayList<>();
+        secondaryItems.add(new TaskItem(true, "Второстепенная задача", TaskItem.Type.ALARM, "11:30", "08/10/2020"));
+        secondaryItems.add(new TaskItem(true, "Еще одна не очень важная задача", TaskItem.Type.NOTE, "00:25", "08/05/2020"));
+        secondaryItems.add(new TaskItem(true, "Переключить таб", TaskItem.Type.PLACE, "13:00", "08/01/2020"));
+        secondaryItems.add(new TaskItem(false, "Вернуть его на место", TaskItem.Type.PLACE, "11:55", "07/05/2020"));
+        secondaryItems.add(new TaskItem(false, "Завершить список", TaskItem.Type.ALARM, "16:00", "09/05/2020"));
+
+        secondaryTasksAdapter = new TaskRecyclerAdapter(secondaryItems, this);
+
+        secondaryTasksAdapter.setListener(onTaskRecyclerItemClickListener);
+    }
+
+    private void initTabs() {
+        tabLayout.addTab(tabLayout.newTab().setText("Main"));
+        tabLayout.addTab(tabLayout.newTab().setText("Secondary"));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Full task name")
-                        .setMessage(adapter.getItems().get(position).getTaskName())
-                        .setCancelable(true)
-                        .create().show();
-            }
-        });
-
-        // Can be changed to any layout manager
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (items != null && adapter != null) {
-                    items.add(new TaskItem(true, "NEW TASK", TaskItem.Type.PLACE, "13:00", "15/05/2017"));
-                    adapter.notifyDataSetChanged();
-                    //recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        recyclerView.swapAdapter(mainTasksAdapter, false);
+                        break;
+                    case 1:
+                        recyclerView.swapAdapter(secondaryTasksAdapter, false);
+                        break;
                 }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 
