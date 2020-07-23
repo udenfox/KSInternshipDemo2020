@@ -26,28 +26,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_tabs" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_recycler"
-        app:layout_constraintEnd_toEndOf="@+id/rv_recycler" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_second"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toTopOf="@+id/fab_add"
-        app:layout_constraintEnd_toEndOf="@+id/rv_recycler" />
-
     <ProgressBar
         android:id="@+id/pb_progress"
         android:layout_width="wrap_content"

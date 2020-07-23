@@ -1,7 +1,6 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -10,14 +9,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
-import com.keepsolid.ksinternshipdemo2020.utils.HardTasks;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskRecyclerAdapter;
-import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskItemLoadingCallback;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskRecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -31,13 +27,8 @@ public class MainActivity extends BaseActivity {
     ArrayList<TaskItem> secondaryItems;
     TaskRecyclerAdapter mainTasksAdapter;
     TaskRecyclerAdapter secondaryTasksAdapter;
-    FloatingActionButton addBtn;
-    FloatingActionButton addBtnSecond;
     TabLayout tabLayout;
     ProgressBar progressBar;
-
-    private HardTasks tasks;
-    private HardTasks anotherTasks;
 
     private ExecutorService service = Executors.newFixedThreadPool(2);
 
@@ -63,47 +54,18 @@ public class MainActivity extends BaseActivity {
         initToolbar(getString(R.string.app_name));
 
         recyclerView = findViewById(R.id.rv_recycler);
-        addBtn = findViewById(R.id.fab_add);
         progressBar = findViewById(R.id.pb_progress);
-        addBtnSecond = findViewById(R.id.fab_add_second);
 
         tabLayout = findViewById(R.id.main_tabs);
         initTabs();
 
-        tasks = new HardTasks();
-        anotherTasks = new HardTasks();
-
-        initMainTasksAdapter();
         initSecondaryTasksAdapter();
 
         // Can be changed to any layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mainTasksAdapter);
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                service.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        tasks.getTaskItemHardly("SomeTask", taskItemLoadingCallback);
-                    }
-                });
-
-            }
-        });
-
-        addBtnSecond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                service.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        anotherTasks.getTaskItemHardly("SomeAnotherTask", anotherTaskItemLoadingCallback);
-                    }
-                });
-            }
-        });
+        //TODO: fullfill items.
 
     }
 
@@ -116,21 +78,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initMainTasksAdapter() {
-        items = new ArrayList<>();
-        items.add(new TaskItem(true, "Создать этот список", TaskItem.Type.ALARM, "10:00", "07/05/2020"));
-        items.add(new TaskItem(true, "Отметить первый пункт как готовый", TaskItem.Type.ALARM, "11:25", "07/05/2020"));
-        items.add(new TaskItem(true, "Осознать что 2 пункта уже готовы", TaskItem.Type.NOTE, "11:30", "07/05/2020"));
-        items.add(new TaskItem(false, "Отдохнуть", TaskItem.Type.PLACE, "11:35", "07/05/2020"));
-        items.add(new TaskItem(false, "Заказать воду", TaskItem.Type.ALARM, "16:00", "09/05/2020"));
-        items.add(new TaskItem(true, "Заплатить за интернет", TaskItem.Type.NOTE, "10:00", "11/05/2020"));
-        items.add(new TaskItem(true, "Придумать следующий элемент списка", TaskItem.Type.NOTE, "12:00", "11/05/2020"));
-        items.add(new TaskItem(false, "Сходить на работу", TaskItem.Type.PLACE, "09:00", "12/05/2020"));
-        items.add(new TaskItem(false, "Провести занятие интернатуры", TaskItem.Type.PLACE, "13:00", "12/05/2020"));
-        items.add(new TaskItem(false, "Развидеть увиденное", TaskItem.Type.ALARM, "00:00", "13/05/2020"));
-        items.add(new TaskItem(false, "Перевернуть пингвина", TaskItem.Type.NOTE, "22:00", "13/05/2020"));
-        items.add(new TaskItem(true, "Залипнуть в инете", TaskItem.Type.NOTE, "12:00", "14/05/2020"));
-        items.add(new TaskItem(true, "Впихнуть невпихуемое", TaskItem.Type.PLACE, "13:00", "15/05/2020"));
-
         mainTasksAdapter = new TaskRecyclerAdapter(items, this);
 
         mainTasksAdapter.setListener(onMainTaskRecyclerItemClickListener);
@@ -194,60 +141,6 @@ public class MainActivity extends BaseActivity {
     private void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
-
-    private OnTaskItemLoadingCallback taskItemLoadingCallback = new OnTaskItemLoadingCallback() {
-        @Override
-        public void onLoadingStarted() {
-            Log.e("TaskLoader", "Starting LoadingTask");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showProgressBar();
-                }
-            });
-
-        }
-
-        @Override
-        public void onLoadingFinish(final TaskItem taskItem) {
-            Log.e("TaskLoader", "Task loaded!");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    addItem(taskItem);
-                    hideProgressBar();
-                }
-            });
-
-        }
-    };
-
-    private OnTaskItemLoadingCallback anotherTaskItemLoadingCallback = new OnTaskItemLoadingCallback() {
-        @Override
-        public void onLoadingStarted() {
-            Log.e("TaskLoader", "ANOTHER Starting Loading Task");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showProgressBar();
-                }
-            });
-
-        }
-
-        @Override
-        public void onLoadingFinish(final TaskItem taskItem) {
-            Log.e("TaskLoader", "ANOTHER Task loaded!");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    addItem(taskItem);
-                    hideProgressBar();
-                }
-            });
-
-        }
-    };
 
 
 }
