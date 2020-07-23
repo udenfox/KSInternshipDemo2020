@@ -21,6 +21,8 @@ import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskItemLoadingCallba
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskRecyclerItemClickListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends BaseActivity {
 
@@ -36,6 +38,8 @@ public class MainActivity extends BaseActivity {
 
     private HardTasks tasks;
     private HardTasks anotherTasks;
+
+    private ExecutorService service = Executors.newFixedThreadPool(2);
 
     private OnTaskRecyclerItemClickListener onMainTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
         @Override
@@ -79,13 +83,12 @@ public class MainActivity extends BaseActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showProgressBar();
-                new Thread(new Runnable() {
+                service.submit(new Runnable() {
                     @Override
                     public void run() {
                         tasks.getTaskItemHardly("SomeTask", taskItemLoadingCallback);
                     }
-                }).start();
+                });
 
             }
         });
@@ -93,12 +96,12 @@ public class MainActivity extends BaseActivity {
         addBtnSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Thread(new Runnable() {
+                service.submit(new Runnable() {
                     @Override
                     public void run() {
                         anotherTasks.getTaskItemHardly("SomeAnotherTask", anotherTaskItemLoadingCallback);
                     }
-                }).start();
+                });
             }
         });
 
