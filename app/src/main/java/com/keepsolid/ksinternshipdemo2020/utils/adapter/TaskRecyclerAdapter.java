@@ -35,20 +35,11 @@ public class TaskRecyclerAdapter extends RecyclerView.Adapter<TaskRecyclerAdapte
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_list_item, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null) {
-                    listener.onItemClick(view, viewHolder.getAdapterPosition());
-                }
-            }
-        });
-
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(TaskRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final TaskRecyclerAdapter.ViewHolder holder, int position) {
         holder.isCompleted.setChecked(items.get(position).isCompleted());
         holder.taskTitle.setText(items.get(position).getTaskName());
         holder.taskDate.setText(items.get(position).getTaskDate());
@@ -71,6 +62,15 @@ public class TaskRecyclerAdapter extends RecyclerView.Adapter<TaskRecyclerAdapte
         } else {
             holder.divider.setVisibility(View.VISIBLE);
         }
+
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) {
+                    listener.onItemClick(view, holder.getAdapterPosition());
+                }
+            }
+        });
 
     }
 
@@ -103,6 +103,7 @@ public class TaskRecyclerAdapter extends RecyclerView.Adapter<TaskRecyclerAdapte
         TextView taskTime;
         TextView taskDate;
         View divider;
+        View container;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -115,6 +116,7 @@ public class TaskRecyclerAdapter extends RecyclerView.Adapter<TaskRecyclerAdapte
             taskTime = itemView.findViewById(R.id.item_task_alarm_time);
             taskDate = itemView.findViewById(R.id.item_task_alarm_date);
             divider = itemView.findViewById(R.id.divider);
+            container = itemView;
 
         }
     }

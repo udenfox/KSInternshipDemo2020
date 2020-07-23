@@ -3,6 +3,7 @@ package com.keepsolid.ksinternshipdemo2020.activity;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,14 +28,17 @@ public class MainActivity extends BaseActivity {
     FloatingActionButton addBtn;
     TabLayout tabLayout;
 
-    private OnTaskRecyclerItemClickListener onTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
+    private OnTaskRecyclerItemClickListener onMainTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
         @Override
         public void onItemClick(View view, int position) {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Full task name")
-                    .setMessage(mainTasksAdapter.getItems().get(position).getTaskName())
-                    .setCancelable(true)
-                    .create().show();
+            showDialog(mainTasksAdapter.getItems().get(position).getTaskName());
+        }
+    };
+
+    private OnTaskRecyclerItemClickListener onSecondaryTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position) {
+            showDialog(secondaryTasksAdapter.getItems().get(position).getTaskName());
         }
     };
 
@@ -90,7 +94,7 @@ public class MainActivity extends BaseActivity {
 
         mainTasksAdapter = new TaskRecyclerAdapter(items, this);
 
-        mainTasksAdapter.setListener(onTaskRecyclerItemClickListener);
+        mainTasksAdapter.setListener(onMainTaskRecyclerItemClickListener);
     }
 
     private void initSecondaryTasksAdapter() {
@@ -103,7 +107,15 @@ public class MainActivity extends BaseActivity {
 
         secondaryTasksAdapter = new TaskRecyclerAdapter(secondaryItems, this);
 
-        secondaryTasksAdapter.setListener(onTaskRecyclerItemClickListener);
+        secondaryTasksAdapter.setListener(onSecondaryTaskRecyclerItemClickListener);
+    }
+
+    private void showDialog(@NonNull String message) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Full task name")
+                .setMessage(message)
+                .setCancelable(true)
+                .create().show();
     }
 
     private void initTabs() {
