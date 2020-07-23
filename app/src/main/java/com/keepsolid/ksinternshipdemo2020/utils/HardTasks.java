@@ -12,7 +12,7 @@ public class HardTasks {
 
     public void getTaskItemHardly(@NonNull String taskName, OnTaskItemLoadingCallback callback) {
 
-        synchronized (this) {
+        synchronized (HardTasks.class) {
             if (callback != null) {
                 callback.onLoadingStarted();
             }
