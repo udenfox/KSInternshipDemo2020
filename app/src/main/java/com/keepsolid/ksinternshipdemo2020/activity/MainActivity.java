@@ -2,6 +2,7 @@ package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -13,6 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
+import com.keepsolid.ksinternshipdemo2020.utils.HardTasks;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskRecyclerAdapter;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskRecyclerItemClickListener;
 
@@ -27,6 +29,7 @@ public class MainActivity extends BaseActivity {
     TaskRecyclerAdapter secondaryTasksAdapter;
     FloatingActionButton addBtn;
     TabLayout tabLayout;
+    ProgressBar progressBar;
 
     private OnTaskRecyclerItemClickListener onMainTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
         @Override
@@ -51,6 +54,7 @@ public class MainActivity extends BaseActivity {
 
         recyclerView = findViewById(R.id.rv_recycler);
         addBtn = findViewById(R.id.fab_add);
+        progressBar = findViewById(R.id.pb_progress);
 
         tabLayout = findViewById(R.id.main_tabs);
         initTabs();
@@ -66,10 +70,17 @@ public class MainActivity extends BaseActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (items != null && mainTasksAdapter != null) {
-                    items.add(new TaskItem(true, "NEW TASK", TaskItem.Type.PLACE, "13:00", "15/05/2017"));
+
+                    showProgressBar();
+
+                    items.add(HardTasks.getTaskItemHardly("HAAARD task name"));
+
+                    hideProgressBar();
+
                     mainTasksAdapter.notifyDataSetChanged();
-                    //recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+                    recyclerView.smoothScrollToPosition(recyclerView.getBottom());
                 }
             }
         });
@@ -146,6 +157,18 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void showProgressBar() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideProgressBar() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
 }
