@@ -90,8 +90,14 @@ public class MainActivity extends BaseActivity {
     private void addItem(TaskItem item) {
         if (items != null && mainTasksAdapter != null) {
             items.add(item);
-            mainTasksAdapter.notifyDataSetChanged();
-            recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mainTasksAdapter.notifyDataSetChanged();
+                    recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+                }
+            });
         }
     }
 
@@ -168,15 +174,27 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showProgressBar() {
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
 
     private void hideProgressBar() {
-        if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
 }
