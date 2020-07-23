@@ -74,17 +74,25 @@ public class MainActivity extends BaseActivity {
                 if (items != null && mainTasksAdapter != null) {
 
                     showProgressBar();
-
-                    items.add(HardTasks.getTaskItemHardly("HAAARD task name"));
-
-                    hideProgressBar();
-
-                    mainTasksAdapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            addItem(HardTasks.getTaskItemHardly("HAAARD task name"));
+                            hideProgressBar();
+                        }
+                    }).start();
                 }
             }
         });
 
+    }
+
+    private void addItem(TaskItem item) {
+        if (items != null && mainTasksAdapter != null) {
+            items.add(item);
+            mainTasksAdapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(recyclerView.getBottom());
+        }
     }
 
     private void initMainTasksAdapter() {
