@@ -16,6 +16,7 @@ import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
 import com.keepsolid.ksinternshipdemo2020.utils.HardTasks;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskRecyclerAdapter;
+import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskItemLoadingCallback;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskRecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -72,13 +73,10 @@ public class MainActivity extends BaseActivity {
             public void onClick(View view) {
 
                 if (items != null && mainTasksAdapter != null) {
-
-                    showProgressBar();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            addItem(HardTasks.getTaskItemHardly("HAAARD task name"));
-                            hideProgressBar();
+                            HardTasks.getTaskItemHardly("HAAARD task name", taskItemLoadingCallback);
                         }
                     }).start();
                 }
@@ -90,14 +88,8 @@ public class MainActivity extends BaseActivity {
     private void addItem(TaskItem item) {
         if (items != null && mainTasksAdapter != null) {
             items.add(item);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mainTasksAdapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(recyclerView.getBottom());
-                }
-            });
+            mainTasksAdapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(recyclerView.getBottom());
         }
     }
 
@@ -174,27 +166,37 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showProgressBar() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressBar != null) {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void hideProgressBar() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressBar != null) {
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
+        progressBar.setVisibility(View.GONE);
     }
+
+    private OnTaskItemLoadingCallback taskItemLoadingCallback = new OnTaskItemLoadingCallback() {
+        @Override
+        public void onLoadingStarted() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showProgressBar();
+                }
+            });
+
+        }
+
+        @Override
+        public void onLoadingFinish(final TaskItem taskItem) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    addItem(taskItem);
+                    hideProgressBar();
+                }
+            });
+
+        }
+    };
+
 
 }
