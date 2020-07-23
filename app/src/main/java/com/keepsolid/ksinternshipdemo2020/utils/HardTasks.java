@@ -8,25 +8,30 @@ import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskItemLoadingCallba
 
 public class HardTasks {
 
-    public final static int THREAD_SLEEP_TIME = 4000;
+    private final static int THREAD_SLEEP_TIME = 4000;
 
-    public static void getTaskItemHardly(@NonNull String taskName, OnTaskItemLoadingCallback callback) {
+    public void getTaskItemHardly(@NonNull String taskName, OnTaskItemLoadingCallback callback) {
 
-        if (callback != null) {
-            callback.onLoadingStarted();
-        }
+        synchronized (this) {
+            if (callback != null) {
+                callback.onLoadingStarted();
+            }
 
-        try {
-            Thread.sleep(THREAD_SLEEP_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            try {
+                Thread.sleep(THREAD_SLEEP_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
 
-        }
+            }
 
-        if (callback != null) {
-            callback.onLoadingFinish(new TaskItem(true, taskName, TaskItem.Type.PLACE, "13:00", "15/05/2017"));
+            if (callback != null) {
+                callback.onLoadingFinish(new TaskItem(true, taskName, TaskItem.Type.PLACE, "13:00", "15/05/2017"));
+            }
+
         }
 
     }
 
+
 }
+

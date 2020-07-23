@@ -1,6 +1,7 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -29,8 +30,12 @@ public class MainActivity extends BaseActivity {
     TaskRecyclerAdapter mainTasksAdapter;
     TaskRecyclerAdapter secondaryTasksAdapter;
     FloatingActionButton addBtn;
+    FloatingActionButton addBtnSecond;
     TabLayout tabLayout;
     ProgressBar progressBar;
+
+    private HardTasks tasks;
+    private HardTasks anotherTasks;
 
     private OnTaskRecyclerItemClickListener onMainTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
         @Override
@@ -56,10 +61,13 @@ public class MainActivity extends BaseActivity {
         recyclerView = findViewById(R.id.rv_recycler);
         addBtn = findViewById(R.id.fab_add);
         progressBar = findViewById(R.id.pb_progress);
+        addBtnSecond = findViewById(R.id.fab_add_second);
 
         tabLayout = findViewById(R.id.main_tabs);
         initTabs();
 
+        tasks = new HardTasks();
+        anotherTasks = new HardTasks();
 
         initMainTasksAdapter();
         initSecondaryTasksAdapter();
@@ -71,15 +79,26 @@ public class MainActivity extends BaseActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressBar();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tasks.getTaskItemHardly("SomeTask", taskItemLoadingCallback);
+                    }
+                }).start();
 
-                if (items != null && mainTasksAdapter != null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HardTasks.getTaskItemHardly("HAAARD task name", taskItemLoadingCallback);
-                        }
-                    }).start();
-                }
+            }
+        });
+
+        addBtnSecond.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        anotherTasks.getTaskItemHardly("SomeAnotherTask", anotherTaskItemLoadingCallback);
+                    }
+                }).start();
             }
         });
 
@@ -176,6 +195,7 @@ public class MainActivity extends BaseActivity {
     private OnTaskItemLoadingCallback taskItemLoadingCallback = new OnTaskItemLoadingCallback() {
         @Override
         public void onLoadingStarted() {
+            Log.e("TaskLoader", "Starting LoadingTask");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -187,6 +207,34 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onLoadingFinish(final TaskItem taskItem) {
+            Log.e("TaskLoader", "Task loaded!");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    addItem(taskItem);
+                    hideProgressBar();
+                }
+            });
+
+        }
+    };
+
+    private OnTaskItemLoadingCallback anotherTaskItemLoadingCallback = new OnTaskItemLoadingCallback() {
+        @Override
+        public void onLoadingStarted() {
+            Log.e("TaskLoader", "ANOTHER Starting Loading Task");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showProgressBar();
+                }
+            });
+
+        }
+
+        @Override
+        public void onLoadingFinish(final TaskItem taskItem) {
+            Log.e("TaskLoader", "ANOTHER Task loaded!");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
