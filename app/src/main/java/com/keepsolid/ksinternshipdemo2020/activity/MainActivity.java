@@ -1,24 +1,27 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
 import com.keepsolid.ksinternshipdemo2020.model.TaskItem;
+import com.keepsolid.ksinternshipdemo2020.utils.TaskLoader;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.TaskRecyclerAdapter;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnTaskRecyclerItemClickListener;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends BaseActivity {
 
@@ -29,8 +32,11 @@ public class MainActivity extends BaseActivity {
     TaskRecyclerAdapter secondaryTasksAdapter;
     TabLayout tabLayout;
     ProgressBar progressBar;
+    LinearLayout loaderBlock;
+    TextView progressText;
+    FloatingActionButton refreshBtn;
 
-    private ExecutorService service = Executors.newFixedThreadPool(2);
+    private TaskLoader loader;
 
     private OnTaskRecyclerItemClickListener onMainTaskRecyclerItemClickListener = new OnTaskRecyclerItemClickListener() {
         @Override
@@ -54,32 +60,35 @@ public class MainActivity extends BaseActivity {
         initToolbar(getString(R.string.app_name));
 
         recyclerView = findViewById(R.id.rv_recycler);
+        loaderBlock = findViewById(R.id.loader_block);
         progressBar = findViewById(R.id.pb_progress);
+        progressText = findViewById(R.id.tv_progress);
+        refreshBtn = findViewById(R.id.btn_refresh);
 
         tabLayout = findViewById(R.id.main_tabs);
         initTabs();
 
+        loader = new TaskLoader();
+
+        initMainTasksAdapter();
         initSecondaryTasksAdapter();
 
         // Can be changed to any layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mainTasksAdapter);
 
-        //TODO: fullfill items.
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TaskItemsApiTask().execute(loader.getTaskCount());
+            }
+        });
 
-    }
-
-    private void addItem(TaskItem item) {
-        if (items != null && mainTasksAdapter != null) {
-            items.add(item);
-            mainTasksAdapter.notifyDataSetChanged();
-            recyclerView.smoothScrollToPosition(recyclerView.getBottom());
-        }
     }
 
     private void initMainTasksAdapter() {
+        items = new ArrayList<>();
         mainTasksAdapter = new TaskRecyclerAdapter(items, this);
-
         mainTasksAdapter.setListener(onMainTaskRecyclerItemClickListener);
     }
 
@@ -134,12 +143,65 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
+    private void setLoadingProgress(int progress) {
+        if (progressBar != null) {
+            progressBar.setProgress(progress);
+            progressText.setText(progress + "%");
+        }
+
     }
 
-    private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
+    private void showProgressBlock() {
+        if (loaderBlock != null) {
+            loaderBlock.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideProgressBlock() {
+        if (loaderBlock != null) {
+            loaderBlock.setVisibility(View.GONE);
+        }
+    }
+
+    public class TaskItemsApiTask extends AsyncTask<Integer, Integer, ArrayList<TaskItem>> {
+
+        @Override
+        protected ArrayList<TaskItem> doInBackground(Integer... integers) {
+            int itemsCount = integers[0];
+            for (int i = 0; i < itemsCount; i++) {
+                items.add(loader.loadTaskItemByIndex(i));
+                publishProgress(i, itemsCount);
+
+            }
+            return items;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            items.clear();
+            setLoadingProgress(0);
+            showProgressBlock();
+
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TaskItem> taskItems) {
+            super.onPostExecute(taskItems);
+            mainTasksAdapter.notifyDataSetChanged();
+            hideProgressBlock();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            int completed = values[0];
+            int total = values[1];
+
+            int percentsCompleted = (int) (((float) completed / total) * 100);
+
+            setLoadingProgress(percentsCompleted);
+        }
     }
 
 

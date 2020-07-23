@@ -40,7 +40,7 @@ public class TaskLoader {
 
     public TaskItem loadTaskItemByIndex(int index) {
         try {
-            Thread.sleep(new Random().nextInt(6500));
+            Thread.sleep(new Random().nextInt(2000));
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
