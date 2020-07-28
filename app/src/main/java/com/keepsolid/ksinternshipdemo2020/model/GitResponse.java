@@ -1,34 +1,42 @@
 package com.keepsolid.ksinternshipdemo2020.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class GitResponse {
 
-    private long total_count;
-    private boolean incomplete_requests;
-    private List<GitRepoItem> items;
+    @SerializedName("total_count")
+    private long totalCount;
 
-    public long getTotal_count() {
-        return total_count;
+    @SerializedName("incomplete_results")
+    private boolean incompleteRequests;
+
+    @SerializedName("items")
+    private List<GitRepoItem> repoItems;
+
+
+    public long getTotalcount() {
+        return totalCount;
     }
 
-    public void setTotal_count(long total_count) {
-        this.total_count = total_count;
+    public void setTotalcount(long totalCount) {
+        this.totalCount = totalCount;
     }
 
-    public boolean isIncomplete_requests() {
-        return incomplete_requests;
+    public boolean isIncompleteRequests() {
+        return incompleteRequests;
     }
 
-    public void setIncomplete_requests(boolean incomplete_requests) {
-        this.incomplete_requests = incomplete_requests;
+    public void setIncompleteRequests(boolean incompleteRequests) {
+        this.incompleteRequests = incompleteRequests;
     }
 
     public List<GitRepoItem> getItems() {
-        return items;
+        return repoItems;
     }
 
     public void setItems(List<GitRepoItem> items) {
-        this.items = items;
+        this.repoItems = items;
     }
 }

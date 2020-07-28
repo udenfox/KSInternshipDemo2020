@@ -1,6 +1,8 @@
 package com.keepsolid.ksinternshipdemo2020.model;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +10,8 @@ public class GitRepoItem {
 
     private int id;
     private String name;
+
+    @SerializedName("html_url")
     private String url;
     private String description;
     private GitRepoOwner owner;
