@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity {
 
         adapter = new GitRepoRecyclerAdapter(items, this, new OnGitRepoRecyclerItemClickListener() {
             @Override
-            public void onItemClick(View v, int position, String url) {
+            public void onItemClick(View v, int position, Uri url) {
                 openRepo(url);
             }
         });
@@ -90,9 +90,9 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void openRepo(String url) {
+    private void openRepo(Uri url) {
         try {
-            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, url);
             startActivity(myIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No application can handle this request."

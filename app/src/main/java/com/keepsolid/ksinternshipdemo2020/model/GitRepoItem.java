@@ -1,10 +1,9 @@
 package com.keepsolid.ksinternshipdemo2020.model;
 
 
-import com.google.gson.annotations.SerializedName;
+import android.net.Uri;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.annotations.SerializedName;
 
 public class GitRepoItem {
 
@@ -12,28 +11,15 @@ public class GitRepoItem {
     private String name;
 
     @SerializedName("html_url")
-    private String url;
+    private Uri url;
     private String description;
     private GitRepoOwner owner;
 
-    public GitRepoItem(int id, String name, String url, String description) {
+    public GitRepoItem(int id, String name, Uri url, String description) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.description = description;
-    }
-
-    public GitRepoItem(JSONObject json) {
-
-        try {
-            this.id = json.has("id") ? json.getInt("id") : -1;
-            this.name = json.has("name") ? json.getString("name") : "";
-            this.url = json.has("html_url") ? json.getString("html_url") : null;
-            this.description = json.has("description") ? json.getString("description") : "";
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public int getId() {
@@ -52,11 +38,11 @@ public class GitRepoItem {
         this.name = name;
     }
 
-    public String getUrl() {
+    public Uri getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(Uri url) {
         this.url = url;
     }
 
