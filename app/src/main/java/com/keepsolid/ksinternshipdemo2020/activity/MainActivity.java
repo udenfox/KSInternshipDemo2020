@@ -3,7 +3,6 @@ package com.keepsolid.ksinternshipdemo2020.activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -20,21 +19,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
+import com.keepsolid.ksinternshipdemo2020.api.RestClient;
+import com.keepsolid.ksinternshipdemo2020.model.GitRepoErrorItem;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoItem;
+import com.keepsolid.ksinternshipdemo2020.model.GitResponse;
 import com.keepsolid.ksinternshipdemo2020.utils.KeyboardUtils;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.GitRepoRecyclerAdapter;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnGitRepoRecyclerItemClickListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Converter;
+import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
@@ -108,7 +110,7 @@ public class MainActivity extends BaseActivity {
             usernameInput.requestFocus();
         } else {
             KeyboardUtils.hide(usernameInput);
-            new LoadReposTask().execute(usernameInput.getText().toString());
+            loadRepos(usernameInput.getText().toString());
         }
     }
 
@@ -128,92 +130,39 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public class LoadReposTask extends AsyncTask<String, Void, String> {
+    private void loadRepos(String username) {
+        showProgressBlock();
+        RestClient.getInstance().getService().getUserRepos(username).enqueue(new Callback<GitResponse>() {
 
-        private OkHttpClient client = new OkHttpClient();
+            @Override
+            public void onResponse(@NotNull Call<GitResponse> call, @NotNull Response<GitResponse> response) {
 
-        // https://docs.github.com/en/rest/reference/repos#list-repositories-for-a-user
-        //private final static String URL = "https://api.github.com/users/%s/repos";
+                if (!response.isSuccessful()) {
+                    Converter<ResponseBody, GitRepoErrorItem> converter = RestClient.getInstance().getRetrofit().responseBodyConverter(GitRepoErrorItem.class, new Annotation[0]);
 
-        // https://docs.github.com/en/rest/reference/search#search-repositories
-        private final static String URL = "https://api.github.com/search/repositories?q=%s";
+                    try {
+                        GitRepoErrorItem repoError = converter.convert(response.errorBody());
+                        makeErrorToast(repoError.getMessage() + " \n Details: " + repoError.getDocumentation_url());
+                    } catch (Exception e) {
+                        makeErrorToast("Unhandled error. Code: " + response.code());
+                    }
 
+                    hideProgressBlock();
+                    return;
+                }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            items.clear();
-            showProgressBlock();
-        }
-
-        @Override
-        protected void onPostExecute(String error) {
-            super.onPostExecute(error);
-            hideProgressBlock();
-            if (error != null) {
-                makeErrorToast(error);
-            } else {
+                items.clear();
+                items.addAll(response.body().getItems());
                 adapter.notifyDataSetChanged();
+                hideProgressBlock();
             }
 
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            String repoName = strings[0];
-
-            Request repoReq = new Request.Builder()
-                    .url(String.format(URL, repoName))
-                    .build();
-
-
-            Response response;
-            try {
-                response = client.newCall(repoReq).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "Unhandled server error";
+            @Override
+            public void onFailure(@NotNull Call<GitResponse> call, @NotNull Throwable t) {
+                makeErrorToast("Error occurred during request: " + t.getMessage());
+                t.printStackTrace();
+                hideProgressBlock();
             }
-
-            String jsonString;
-            try {
-                jsonString = response.body().string();
-            } catch (IOException | NullPointerException e) {
-                e.printStackTrace();
-                return "Unhandled parsing error";
-            }
-
-            if (response.isSuccessful()) {
-
-                try {
-                    JSONObject respJson = new JSONObject(jsonString);
-                    JSONArray array = respJson.getJSONArray("items");
-                    for (int i = 0; i < array.length(); i++) {
-                        JSONObject object = array.getJSONObject(i);
-                        items.add(new GitRepoItem(object));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return "JSON parsing error";
-                }
-
-            } else {
-                try {
-                    JSONObject errorObject = new JSONObject(jsonString);
-                    if (errorObject.has("message")) {
-                        return errorObject.getString("message");
-                    } else {
-                        return "Request error with no message";
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return "Error parsing error";
-                }
-            }
-
-            return null;
-        }
+        });
     }
-
 }
