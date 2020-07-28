@@ -1,6 +1,7 @@
 package com.keepsolid.ksinternshipdemo2020.model;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GitRepoItem {
@@ -9,6 +10,7 @@ public class GitRepoItem {
     private String name;
     private String url;
     private String description;
+    private GitRepoOwner owner;
 
     public GitRepoItem(int id, String name, String url, String description) {
         this.id = id;
@@ -19,13 +21,13 @@ public class GitRepoItem {
 
     public GitRepoItem(JSONObject json) {
 
-        this.id = json.optInt("id", -1);
-        this.name = json.optString("name", "");
-        this.url = json.optString("html_url", null);
-        this.description = json.optString("description", null);
-
-        if (description != null && description.equals("null")) {
-            description = null;
+        try {
+            this.id = json.has("id") ? json.getInt("id") : -1;
+            this.name = json.has("name") ? json.getString("name") : "";
+            this.url = json.has("html_url") ? json.getString("html_url") : null;
+            this.description = json.has("description") ? json.getString("description") : "";
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }
@@ -60,6 +62,14 @@ public class GitRepoItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public GitRepoOwner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(GitRepoOwner owner) {
+        this.owner = owner;
     }
 
     @Override

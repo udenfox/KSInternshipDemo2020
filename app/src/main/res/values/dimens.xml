@@ -10,4 +10,5 @@
     <dimen name="list_item_height">52dp</dimen>
     <dimen name="list_item_alarm_icon_side">16dp</dimen>
     <dimen name="text_size">10sp</dimen>
+    <dimen name="default_small_margin">8dp</dimen>
 </resources>

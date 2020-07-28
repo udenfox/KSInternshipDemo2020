@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoItem;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnGitRepoRecyclerItemClickListener;
@@ -55,12 +57,10 @@ public class GitRepoRecyclerAdapter extends RecyclerView.Adapter<GitRepoRecycler
         }
 
         holder.name.setText(items.get(position).getName());
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null) {
-                    listener.onItemClick(view, holder.getAdapterPosition(), items.get(holder.getAdapterPosition()).getUrl());
-                }
+        Glide.with(holder.avatar).load(items.get(position).getOwner().getAvatar_url()).placeholder(R.drawable.ic_account_multiple_grey600_24dp).into(holder.avatar);
+        holder.container.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onItemClick(view, holder.getAdapterPosition(), items.get(holder.getAdapterPosition()).getUrl());
             }
         });
 
@@ -83,6 +83,7 @@ public class GitRepoRecyclerAdapter extends RecyclerView.Adapter<GitRepoRecycler
 
         TextView name;
         TextView description;
+        AppCompatImageView avatar;
         View container;
 
         public ViewHolder(View itemView) {
@@ -92,6 +93,7 @@ public class GitRepoRecyclerAdapter extends RecyclerView.Adapter<GitRepoRecycler
 
             description = itemView.findViewById(R.id.tv_repo_desc);
             name = itemView.findViewById(R.id.tv_repo_name);
+            avatar = itemView.findViewById(R.id.iv_user_avatar);
             container = itemView;
 
         }
