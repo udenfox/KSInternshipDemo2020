@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.keepsolid.ksinternshipdemo2020.R;
 import com.keepsolid.ksinternshipdemo2020.activity.base.BaseActivity;
+import com.keepsolid.ksinternshipdemo2020.api.ApiCallback;
 import com.keepsolid.ksinternshipdemo2020.api.RestClient;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoErrorItem;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoItem;
@@ -29,13 +30,8 @@ import com.keepsolid.ksinternshipdemo2020.utils.listener.OnGitRepoRecyclerItemCl
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Converter;
 import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
@@ -132,23 +128,16 @@ public class MainActivity extends BaseActivity {
 
     private void loadRepos(String username) {
         showProgressBlock();
-        RestClient.getInstance().getService().getUserRepos(username).enqueue(new Callback<GitResponse>() {
+        RestClient.getInstance().getService().getUserRepos(username).enqueue(new ApiCallback<GitResponse>() {
 
             @Override
-            public void onResponse(@NotNull Call<GitResponse> call, @NotNull Response<GitResponse> response) {
+            public void success(@NotNull Response<GitResponse> response) {
 
                 if (!response.isSuccessful()) {
-                    Converter<ResponseBody, GitRepoErrorItem> converter = RestClient.getInstance().getRetrofit().responseBodyConverter(GitRepoErrorItem.class, new Annotation[0]);
-
-                    try {
-                        GitRepoErrorItem repoError = converter.convert(response.errorBody());
-                        makeErrorToast(repoError.getMessage() + " \n Details: " + repoError.getDocumentation_url());
-                    } catch (Exception e) {
-                        makeErrorToast("Unhandled error. Code: " + response.code());
-                    }
-
+                    items.clear();
+                    items.addAll(response.body().getItems());
+                    adapter.notifyDataSetChanged();
                     hideProgressBlock();
-                    return;
                 }
 
                 items.clear();
@@ -158,9 +147,12 @@ public class MainActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(@NotNull Call<GitResponse> call, @NotNull Throwable t) {
-                makeErrorToast("Error occurred during request: " + t.getMessage());
-                t.printStackTrace();
+            public void failure(GitRepoErrorItem gitRepoError) {
+                if (TextUtils.isEmpty(gitRepoError.getDocumentation_url())) {
+                    makeErrorToast(gitRepoError.getMessage());
+                } else {
+                    makeErrorToast(gitRepoError.getMessage() + ", Details: " + gitRepoError.getDocumentation_url());
+                }
                 hideProgressBlock();
             }
         });

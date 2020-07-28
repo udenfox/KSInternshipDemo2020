@@ -7,6 +7,10 @@ public class GitRepoErrorItem {
     private String message;
     private String documentation_url;
 
+    public GitRepoErrorItem(String message) {
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -39,3 +43,4 @@ public class GitRepoErrorItem {
         return message != null ? message.hashCode() : 0;
     }
 }
+
