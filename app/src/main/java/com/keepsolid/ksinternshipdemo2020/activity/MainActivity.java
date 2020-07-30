@@ -96,6 +96,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        checkCachedItems();
+    }
+
+    private void checkCachedItems() {
+        List<GitRepoItem> cachedItems = ApplicationSettingsManager.getCachedItems(MainActivity.this);
+        if (cachedItems != null && !cachedItems.isEmpty()) {
+            items.addAll(cachedItems);
+        }
     }
 
     private void initCheckBox() {
@@ -170,6 +178,7 @@ public class MainActivity extends BaseActivity {
         }
         items.addAll(itemsToUpdate);
         adapter.notifyDataSetChanged();
+        ApplicationSettingsManager.cacheLoadedItems(MainActivity.this, items);
     }
 
     private void handleError(GitRepoErrorItem errorItem) {
