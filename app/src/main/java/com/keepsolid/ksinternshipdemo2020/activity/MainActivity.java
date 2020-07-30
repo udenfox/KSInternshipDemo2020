@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.keepsolid.ksinternshipdemo2020.api.RestClient;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoErrorItem;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoItem;
 import com.keepsolid.ksinternshipdemo2020.model.GitResponse;
+import com.keepsolid.ksinternshipdemo2020.utils.ApplicationSettingsManager;
 import com.keepsolid.ksinternshipdemo2020.utils.KeyboardUtils;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.GitRepoRecyclerAdapter;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnGitRepoRecyclerItemClickListener;
@@ -61,6 +63,8 @@ public class MainActivity extends BaseActivity {
         showUserRepos = findViewById(R.id.cbx_user_repo);
         dontCleadList = findViewById(R.id.cbx_dont_clear);
 
+        initCheckBox();
+
         items = new ArrayList<>();
 
         adapter = new GitRepoRecyclerAdapter(items, this, new OnGitRepoRecyclerItemClickListener() {
@@ -89,6 +93,28 @@ public class MainActivity extends BaseActivity {
                 }
 
                 return false;
+            }
+        });
+
+    }
+
+    private void initCheckBox() {
+
+        showUserRepos.setChecked(ApplicationSettingsManager.isSearchByUserEnabled(MainActivity.this));
+        dontCleadList.setChecked(ApplicationSettingsManager.isDontClearListEnabled(MainActivity.this));
+
+
+        showUserRepos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                ApplicationSettingsManager.setSearchByUserEnabled(MainActivity.this, isChecked);
+            }
+        });
+
+        dontCleadList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                ApplicationSettingsManager.setDontClearListEnabled(MainActivity.this, isChecked);
             }
         });
 
