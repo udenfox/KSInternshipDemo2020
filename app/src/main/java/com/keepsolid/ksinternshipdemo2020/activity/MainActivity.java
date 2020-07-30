@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,9 +29,8 @@ import com.keepsolid.ksinternshipdemo2020.utils.KeyboardUtils;
 import com.keepsolid.ksinternshipdemo2020.utils.adapter.GitRepoRecyclerAdapter;
 import com.keepsolid.ksinternshipdemo2020.utils.listener.OnGitRepoRecyclerItemClickListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -41,7 +41,9 @@ public class MainActivity extends BaseActivity {
 
     private AppCompatButton goButton;
     private ProgressBar progressBar;
-    private AppCompatEditText usernameInput;
+    private AppCompatEditText searchQueryInput;
+    private AppCompatCheckBox showUserRepos;
+    private AppCompatCheckBox dontCleadList;
     private ArrayList<GitRepoItem> items;
     private GitRepoRecyclerAdapter adapter;
 
@@ -54,8 +56,10 @@ public class MainActivity extends BaseActivity {
 
         loaderBlock = findViewById(R.id.loader_block);
         recycler = findViewById(R.id.rv_recycler);
-        usernameInput = findViewById(R.id.et_username_input);
+        searchQueryInput = findViewById(R.id.et_username_input);
         goButton = findViewById(R.id.btn_go);
+        showUserRepos = findViewById(R.id.cbx_user_repo);
+        dontCleadList = findViewById(R.id.cbx_dont_clear);
 
         items = new ArrayList<>();
 
@@ -76,7 +80,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        usernameInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        searchQueryInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -88,6 +92,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void doRequest(String query) {
+        if (showUserRepos.isChecked()) {
+            getReposByUserName(query);
+        } else {
+            searchReposByName(query);
+        }
     }
 
     private void openRepo(Uri url) {
@@ -102,11 +114,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void handleSearchAction() {
-        if (TextUtils.isEmpty(usernameInput.getText().toString())) {
-            usernameInput.requestFocus();
+        if (TextUtils.isEmpty(searchQueryInput.getText().toString())) {
+            searchQueryInput.requestFocus();
         } else {
-            KeyboardUtils.hide(usernameInput);
-            loadRepos(usernameInput.getText().toString());
+            KeyboardUtils.hide(searchQueryInput);
+            doRequest(searchQueryInput.getText().toString());
         }
     }
 
@@ -126,33 +138,53 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void loadRepos(String username) {
+    private void updateList(List<GitRepoItem> itemsToUpdate) {
+        if (!dontCleadList.isChecked()) {
+            items.clear();
+        }
+        items.addAll(itemsToUpdate);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void handleError(GitRepoErrorItem errorItem) {
+        if (TextUtils.isEmpty(errorItem.getDocumentation_url())) {
+            makeErrorToast(errorItem.getMessage());
+        } else {
+            makeErrorToast(errorItem.getMessage() + errorItem.getDocumentation_url());
+        }
+    }
+
+    private void searchReposByName(String repoName) {
         showProgressBlock();
-        RestClient.getInstance().getService().getUserRepos(username).enqueue(new ApiCallback<GitResponse>() {
+        RestClient.getInstance().getService().searchRepos(repoName).enqueue(new ApiCallback<GitResponse>() {
 
             @Override
-            public void success(@NotNull Response<GitResponse> response) {
-
-                if (!response.isSuccessful()) {
-                    items.clear();
-                    items.addAll(response.body().getItems());
-                    adapter.notifyDataSetChanged();
-                    hideProgressBlock();
-                }
-
-                items.clear();
-                items.addAll(response.body().getItems());
-                adapter.notifyDataSetChanged();
+            public void success(Response<GitResponse> response) {
+                updateList(response.body().getItems());
                 hideProgressBlock();
             }
 
             @Override
             public void failure(GitRepoErrorItem gitRepoError) {
-                if (TextUtils.isEmpty(gitRepoError.getDocumentation_url())) {
-                    makeErrorToast(gitRepoError.getMessage());
-                } else {
-                    makeErrorToast(gitRepoError.getMessage() + ", Details: " + gitRepoError.getDocumentation_url());
-                }
+                handleError(gitRepoError);
+                hideProgressBlock();
+            }
+        });
+    }
+
+    private void getReposByUserName(String username) {
+        showProgressBlock();
+        RestClient.getInstance().getService().getReposByUserName(username).enqueue(new ApiCallback<List<GitRepoItem>>() {
+
+            @Override
+            public void success(Response<List<GitRepoItem>> response) {
+                updateList(response.body());
+                hideProgressBlock();
+            }
+
+            @Override
+            public void failure(GitRepoErrorItem gitRepoError) {
+                handleError(gitRepoError);
                 hideProgressBlock();
             }
         });

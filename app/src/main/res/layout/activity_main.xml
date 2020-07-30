@@ -38,12 +38,37 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/checkboxes_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/ll_search">
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cbx_user_repo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
+            android:text="Users repo" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cbx_dont_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Don't clear list" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_search" />
+        app:layout_constraintTop_toBottomOf="@+id/checkboxes_layout" />
 
     <LinearLayout
         android:id="@+id/loader_block"
