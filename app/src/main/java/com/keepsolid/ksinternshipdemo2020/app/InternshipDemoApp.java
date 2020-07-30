@@ -21,6 +21,7 @@ public class InternshipDemoApp extends Application {
         Log.d(LOG_TAG, "onCreate()");
         appDatabase = Room.databaseBuilder(this, AppDatabase.class, "gititems")
                 .allowMainThreadQueries()
+                .addMigrations(AppDatabase.MIGRATION_1_2)
                 .build();
     }
 
