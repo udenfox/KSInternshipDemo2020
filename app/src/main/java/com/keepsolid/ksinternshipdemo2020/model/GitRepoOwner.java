@@ -2,16 +2,22 @@ package com.keepsolid.ksinternshipdemo2020.model;
 
 import androidx.room.ColumnInfo;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GitRepoOwner {
 
-    @ColumnInfo(name="userId")
+    @ColumnInfo(name = "userId")
     private int id;
 
-    @ColumnInfo(name="userLogin")
+    @ColumnInfo(name = "userLogin")
     private String login;
 
-    @ColumnInfo(name="userAvatar")
+    @ColumnInfo(name = "userAvatar")
     private String avatar_url;
+
+    @SerializedName("url")
+    @ColumnInfo(name = "userProfileUrl")
+    private String profileUrl;
 
     public String getLogin() {
         return login;
@@ -35,6 +41,14 @@ public class GitRepoOwner {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
     }
 
     @Override

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase;
 
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoItem;
 
-@Database(entities = {GitRepoItem.class}, version = 1)
+@Database(entities = {GitRepoItem.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract RepoItemDao repoItemDao();
 }
