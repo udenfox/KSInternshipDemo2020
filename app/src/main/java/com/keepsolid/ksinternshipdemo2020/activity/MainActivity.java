@@ -96,14 +96,13 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        checkCachedItems();
-    }
 
-    private void checkCachedItems() {
-        List<GitRepoItem> cachedItems = getDatabase().repoItemDao().getAll();
-        if (cachedItems != null && !cachedItems.isEmpty()) {
-            items.addAll(cachedItems);
-        }
+        getDatabase().repoItemDao().getAll().observe(this, gitRepoItems -> {
+            items.clear();
+            items.addAll(gitRepoItems);
+            adapter.notifyDataSetChanged();
+        });
+
     }
 
     private void initCheckBox() {
@@ -174,12 +173,9 @@ public class MainActivity extends BaseActivity {
 
     private void updateList(List<GitRepoItem> itemsToUpdate) {
         if (!dontCleadList.isChecked()) {
-            items.clear();
             getDatabase().repoItemDao().deleteAll();
         }
-        items.addAll(itemsToUpdate);
-        adapter.notifyDataSetChanged();
-        getDatabase().repoItemDao().insert(items);
+        getDatabase().repoItemDao().insert(itemsToUpdate);
     }
 
     private void handleError(GitRepoErrorItem errorItem) {

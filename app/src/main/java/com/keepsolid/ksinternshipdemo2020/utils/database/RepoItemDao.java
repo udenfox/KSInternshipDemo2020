@@ -1,5 +1,6 @@
 package com.keepsolid.ksinternshipdemo2020.utils.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -15,10 +16,10 @@ import java.util.List;
 public interface RepoItemDao {
 
     @Query("SELECT * FROM gitItemsTable")
-    List<GitRepoItem> getAll();
+    LiveData<List<GitRepoItem>> getAll();
 
     @Query("SELECT * FROM gitItemsTable WHERE id = :id")
-    GitRepoItem getById(long id);
+    LiveData<GitRepoItem> getById(long id);
 
     @Insert
     void insert(GitRepoItem item);
