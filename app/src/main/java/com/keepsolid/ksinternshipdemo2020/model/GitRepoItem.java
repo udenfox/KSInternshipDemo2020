@@ -11,7 +11,7 @@ import androidx.room.TypeConverters;
 import com.google.gson.annotations.SerializedName;
 import com.keepsolid.ksinternshipdemo2020.utils.database.UriConverter;
 
-@Entity
+@Entity(tableName = "gitItemsTable")
 @TypeConverters({UriConverter.class})
 public class GitRepoItem {
 

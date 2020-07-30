@@ -3,6 +3,7 @@ package com.keepsolid.ksinternshipdemo2020.utils.database;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,16 +14,16 @@ import java.util.List;
 @Dao
 public interface RepoItemDao {
 
-    @Query("SELECT * FROM gitrepoitem")
+    @Query("SELECT * FROM gitItemsTable")
     List<GitRepoItem> getAll();
 
-    @Query("SELECT * FROM gitrepoitem WHERE id = :id")
+    @Query("SELECT * FROM gitItemsTable WHERE id = :id")
     GitRepoItem getById(long id);
 
     @Insert
     void insert(GitRepoItem item);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(List<GitRepoItem> items);
 
     @Update
@@ -31,7 +32,7 @@ public interface RepoItemDao {
     @Delete
     void delete(GitRepoItem item);
 
-    @Query("DELETE FROM gitrepoitem")
+    @Query("DELETE FROM gitItemsTable")
     void deleteAll();
 
 

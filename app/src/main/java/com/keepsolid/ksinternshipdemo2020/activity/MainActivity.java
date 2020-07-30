@@ -175,6 +175,7 @@ public class MainActivity extends BaseActivity {
     private void updateList(List<GitRepoItem> itemsToUpdate) {
         if (!dontCleadList.isChecked()) {
             items.clear();
+            getDatabase().repoItemDao().deleteAll();
         }
         items.addAll(itemsToUpdate);
         adapter.notifyDataSetChanged();
