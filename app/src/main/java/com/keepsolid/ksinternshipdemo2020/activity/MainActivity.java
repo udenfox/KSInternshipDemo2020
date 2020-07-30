@@ -100,7 +100,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void checkCachedItems() {
-        List<GitRepoItem> cachedItems = ApplicationSettingsManager.getCachedItems(MainActivity.this);
+        List<GitRepoItem> cachedItems = getDatabase().repoItemDao().getAll();
         if (cachedItems != null && !cachedItems.isEmpty()) {
             items.addAll(cachedItems);
         }
@@ -178,7 +178,7 @@ public class MainActivity extends BaseActivity {
         }
         items.addAll(itemsToUpdate);
         adapter.notifyDataSetChanged();
-        ApplicationSettingsManager.cacheLoadedItems(MainActivity.this, items);
+        getDatabase().repoItemDao().insert(items);
     }
 
     private void handleError(GitRepoErrorItem errorItem) {

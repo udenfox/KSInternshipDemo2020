@@ -3,16 +3,27 @@ package com.keepsolid.ksinternshipdemo2020.model;
 
 import android.net.Uri;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.google.gson.annotations.SerializedName;
+import com.keepsolid.ksinternshipdemo2020.utils.database.UriConverter;
+
+@Entity
+@TypeConverters({UriConverter.class})
 public class GitRepoItem {
 
+    @PrimaryKey
     private int id;
     private String name;
 
     @SerializedName("html_url")
     private Uri url;
     private String description;
+
+    @Embedded
     private GitRepoOwner owner;
 
     public GitRepoItem(int id, String name, Uri url, String description) {

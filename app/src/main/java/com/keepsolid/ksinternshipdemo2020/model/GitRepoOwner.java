@@ -1,8 +1,16 @@
 package com.keepsolid.ksinternshipdemo2020.model;
 
+import androidx.room.ColumnInfo;
+
 public class GitRepoOwner {
 
+    @ColumnInfo(name="userId")
+    private int id;
+
+    @ColumnInfo(name="userLogin")
     private String login;
+
+    @ColumnInfo(name="userAvatar")
     private String avatar_url;
 
     public String getLogin() {
@@ -21,6 +29,14 @@ public class GitRepoOwner {
         this.avatar_url = avatar_url;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -28,14 +44,12 @@ public class GitRepoOwner {
 
         GitRepoOwner that = (GitRepoOwner) o;
 
-        if (login != null ? !login.equals(that.login) : that.login != null) return false;
-        return avatar_url != null ? avatar_url.equals(that.avatar_url) : that.avatar_url == null;
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        int result = login != null ? login.hashCode() : 0;
-        result = 31 * result + (avatar_url != null ? avatar_url.hashCode() : 0);
-        return result;
+        return id;
     }
+
 }
