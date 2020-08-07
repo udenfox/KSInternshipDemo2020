@@ -1,7 +1,9 @@
 package com.keepsolid.ksinternshipdemo2020.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,7 +30,9 @@ import com.keepsolid.ksinternshipdemo2020.api.RestClient;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoErrorItem;
 import com.keepsolid.ksinternshipdemo2020.model.GitRepoItem;
 import com.keepsolid.ksinternshipdemo2020.model.GitResponse;
+import com.keepsolid.ksinternshipdemo2020.screens.main.MainContract;
 import com.keepsolid.ksinternshipdemo2020.screens.main.MainFragment;
+import com.keepsolid.ksinternshipdemo2020.screens.main.MainLocalPresenter;
 import com.keepsolid.ksinternshipdemo2020.screens.main.MainPresenter;
 import com.keepsolid.ksinternshipdemo2020.utils.ApplicationSettingsManager;
 import com.keepsolid.ksinternshipdemo2020.utils.KeyboardUtils;
@@ -52,10 +56,26 @@ public class MainActivity extends BaseActivity {
 
         fragmentContainer = findViewById(R.id.fragment_container);
 
+        MainContract.Presenter presenter;
+        ApplicationSettingsManager applicationSettingsManager = new ApplicationSettingsManager(MainActivity.this);
+
+        if (isNetworkConnected()) {
+            presenter = new MainPresenter(applicationSettingsManager, getDatabase());
+        } else {
+            presenter = new MainLocalPresenter(applicationSettingsManager, getDatabase());
+        }
+
         MainFragment mainFragment = new MainFragment();
-        mainFragment.setPresenter(new MainPresenter(new ApplicationSettingsManager(MainActivity.this), getDatabase()));
+        mainFragment.setPresenter(presenter);
 
         getSupportFragmentManager().beginTransaction().add(fragmentContainer.getId(), mainFragment).commit();
 
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
 }

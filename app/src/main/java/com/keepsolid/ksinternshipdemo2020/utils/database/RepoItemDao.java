@@ -21,6 +21,12 @@ public interface RepoItemDao {
     @Query("SELECT * FROM gitItemsTable WHERE id = :id")
     LiveData<GitRepoItem> getById(long id);
 
+    @Query("SELECT * FROM gitItemsTable WHERE name LIKE '%' || :query || '%'")
+    LiveData<List<GitRepoItem>> searchByRepoName(String query);
+
+    @Query("SELECT * FROM gitItemsTable WHERE userLogin LIKE '%' || :query || '%'")
+    LiveData<List<GitRepoItem>> searchByUserLogin(String query);
+
     @Insert
     void insert(GitRepoItem item);
 
